@@ -18,17 +18,17 @@ function Question({ question, setAnswerStatus }) {
 	const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
 	
   useEffect(() => {
-  	if (selectedAnswerIndex != null) {
-    	setAnswerStatus(selectedAnswerIndex === question.correctAnswerIndex)
+    if (selectedAnswerIndex != null) {
+      setAnswerStatus(selectedAnswerIndex === question.correctAnswerIndex)
     }
   }, [selectedAnswerIndex])
-  
+
   useEffect(() => {
-  	setSelectedAnswerIndex(null)
+    setSelectedAnswerIndex(null)
   }, [question])
-  
+
   const getClasses = (index) => {
-  	let classes = []
+    let classes = []
     if (selectedAnswerIndex != null) {
       if (selectedAnswerIndex === index) {
         classes.push("selected")
@@ -41,7 +41,7 @@ function Question({ question, setAnswerStatus }) {
         }
       }
     }
-    
+
     return classes.join(" ")
   }
   
@@ -83,36 +83,36 @@ function ProgressBar({ currentQuestionIndex, totalQuestionsCount }) {
   )
 }
 
-function Quiz({ questions })  {
-	const [questionIndex, setQuestionIndex] = useState(null)
+function Quiz({ questions }) {
+  const [questionIndex, setQuestionIndex] = useState(null)
   const [answerStatus, setAnswerStatus] = useState(null)
   const [correctAnswerCount, setCorrectAnswerCount] = useState(0)
   const [quizComplete, setQuizComplete] = useState(false)
-  
+
   useEffect(() => {
-  	setAnswerStatus(null)
+    setAnswerStatus(null)
   }, [questionIndex])
-  
+
   useEffect(() => {
-  	if (answerStatus) {
-			setCorrectAnswerCount(count => count + 1)
-		}
+    if (answerStatus) {
+      setCorrectAnswerCount(count => count + 1)
+    }
   }, [answerStatus])
 
   const onNextClick = () => {
-  	if (questionIndex === questions.length - 1) {
-    	setQuizComplete(true)
+    if (questionIndex === questions.length - 1) {
+      setQuizComplete(true)
     } else {
-    	setQuestionIndex(questionIndex == null ? 0 : questionIndex + 1)
-		}
+      setQuestionIndex(questionIndex == null ? 0 : questionIndex + 1)
+    }
   }
-  
+
   const onRestartClick = () => {
-  	setQuizComplete(false)
+    setQuizComplete(false)
     setQuestionIndex(null)
     setCorrectAnswerCount(0)
   }
-  
+
   if (questionIndex == null) {
     return (
       <Card sx={{ minWidth: 345, maxWidth: 400}}>

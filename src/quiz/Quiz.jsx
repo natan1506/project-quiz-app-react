@@ -1,7 +1,13 @@
 import { useState, useEffect, Fragment } from 'react';
+import Button from '@mui/material/Button';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
 import './quiz.css'
 
-const Question = ({ question, setAnswerStatus }) => {
+function Question({ question, setAnswerStatus }) {
 	const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
 	
   useEffect(() => {
@@ -33,24 +39,31 @@ const Question = ({ question, setAnswerStatus }) => {
   }
   
 	return (
-  	<div className="question">
-      <div className="questionText">{question.question}</div>
-      <div className="answers">
+  	<Box sx={{m: 2}}>
+      <Typography variant="h6" component="div">
+        {question.question}
+      </Typography>
+      <Box sx={{mt: 2}}>
         {question.answers.map((answer, index) => {
         	return <div key={index} className={`answer ${getClasses(index)}`} onClick={() => selectedAnswerIndex == null && setSelectedAnswerIndex(index)}>{answer}</div>
       	})}
-      </div>
-    </div>
+      </Box>
+    </Box>
  )
 }
 
-const ProgressBar = ({ currentQuestionIndex, totalQuestionsCount }) => {
+function ProgressBar({ currentQuestionIndex, totalQuestionsCount }) {
 	const progressPercentage = (currentQuestionIndex / totalQuestionsCount) * 100
   
-	return <div className="progressBar">
-    <div className="text">{currentQuestionIndex} answered ({totalQuestionsCount - currentQuestionIndex} remaining)</div>
-    <div className="inner" style={{ width: `${progressPercentage}%` }} />
-	</div>
+	return (
+    <Box sx={{ width: '100%' }}>
+      <LinearProgress variant="determinate" value={progressPercentage} />
+    </Box>
+    // <div className="progressBar">
+    //   <div className="text">{currentQuestionIndex} answered ({totalQuestionsCount - currentQuestionIndex} remaining)</div>
+    //   <div className="inner" style={{ width: `${progressPercentage}%` }} />
+    // </div>
+  )
 }
 
 function Quiz({ questions })  {
@@ -85,41 +98,51 @@ function Quiz({ questions })  {
   
   if (questionIndex == null) {
     return (
-      <div className="quiz">
-        <h1>Start Quiz</h1>
-        <p>This is a simple React quiz.</p><p>Check out the accompanying article over at <a href="#">justacodingblog</a> for a detailed breakdown of how the quiz works!</p>
-        <button className="start" onClick={onNextClick}>Start</button>
-      </div>
+      <Card sx={{ minWidth: 345, maxWidth: 400}}>
+        <CardContent>
+          <Typography variant="h3" component="div">
+            Questionario
+          </Typography>
+          <p>This is a simple React quiz.</p><p>Check out the accompanying article over at <a href="#">justacodingblog</a> for a detailed breakdown of how the quiz works!</p>
+          <Button variant="outlined" size="small" onClick={onNextClick}>Começar</Button>
+        </CardContent>
+      </Card>
     )
   }
 	
 	return (
-    <div className="quiz">
-      {quizComplete ? (
-      	<Fragment>
-      	  <h1>Quiz complete!</h1>
-          <p>You answered {correctAnswerCount} questions correctly (out of a total {questions.length} questions)</p>
+    <Card sx={{ minWidth: 345, maxWidth: 400}}>
+      <CardContent>
+        {quizComplete ? (
+          <Fragment>
+            <Typography variant="h3" component="div">
+              Questionario completo
+            </Typography>
+            <p>You answered {correctAnswerCount} questions correctly (out of a total {questions.length} questions)</p>
+          </Fragment>
+        ) : (
+        <Fragment>
+          <ProgressBar currentQuestionIndex={questionIndex} totalQuestionsCount={questions.length} />
+          <Question 
+            question={questions[questionIndex]} 
+            setAnswerStatus={setAnswerStatus}
+          />
+          {answerStatus != null && (
+            <div>
+              <div className="answerStatus">{!!answerStatus ? "Correto" : "Resposta errada"}</div>
+              <Button variant="outlined" size="small" onClick={onNextClick}>
+                {questionIndex === questions.length - 1 ? "Ver resultado" : "Próxima"}
+              </Button>
+            </div>
+          )}
         </Fragment>
-      ) : (
-       <Fragment>
-        <ProgressBar currentQuestionIndex={questionIndex} totalQuestionsCount={questions.length} />
-        <Question 
-          question={questions[questionIndex]} 
-          setAnswerStatus={setAnswerStatus}
-        />
-        {answerStatus != null && (
-          <div>
-            <div className="answerStatus">{!!answerStatus ? "Correct! :)" : "Your answer was incorrect :("}</div>
-            <button className="next" onClick={onNextClick}>
-            {questionIndex === questions.length - 1 ? "See results of this quiz" : "Next Question ->"}
-            </button>
-          </div>
         )}
-      </Fragment>
-      )}
+        
+        {questionIndex != null && <Button variant="outlined" size="small" onClick={onRestartClick}>
+          recomeçar</Button>}
       
-      {questionIndex != null && <button className="restart" onClick={onRestartClick}>Restart quiz</button>}
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 

@@ -2,7 +2,7 @@
 export const questions = [
 	{
   	question: "In what contintent is Indonesia?",
-  	answers: ["South America", "Europe", "Asia"],
+  	answers: ["South America", "Europe", "Asia", "Mars", "X(-12"],
   	correctAnswerIndex: 2
   },
   {

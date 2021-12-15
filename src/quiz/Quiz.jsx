@@ -1,21 +1,22 @@
-import { useState, useEffect, Fragment } from 'react';
+import { Box, Button, Container, Grid, Typography } from '@material-ui/core';
+import { useState, useEffect } from 'react';
 import './quiz.css'
 
 const Question = ({ question, setAnswerStatus }) => {
-	const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
-	
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
+
   useEffect(() => {
-  	if (selectedAnswerIndex != null) {
-    	setAnswerStatus(selectedAnswerIndex === question.correctAnswerIndex)
+    if (selectedAnswerIndex != null) {
+      setAnswerStatus(selectedAnswerIndex === question.correctAnswerIndex)
     }
   }, [selectedAnswerIndex])
-  
+
   useEffect(() => {
-  	setSelectedAnswerIndex(null)
+    setSelectedAnswerIndex(null)
   }, [question])
-  
+
   const getClasses = (index) => {
-  	let classes = []
+    let classes = []
     if (selectedAnswerIndex != null) {
       if (selectedAnswerIndex === index) {
         classes.push("selected")
@@ -28,98 +29,101 @@ const Question = ({ question, setAnswerStatus }) => {
         }
       }
     }
-    
+
     return classes.join(" ")
   }
-  
-	return (
-  	<div className="question">
-      <div className="questionText">{question.question}</div>
-      <div className="answers">
+
+  return (
+    <Grid>
+      <Box>{question.question}</Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         {question.answers.map((answer, index) => {
-        	return <div key={index} className={`answer ${getClasses(index)}`} onClick={() => selectedAnswerIndex == null && setSelectedAnswerIndex(index)}>{answer}</div>
-      	})}
-      </div>
-    </div>
- )
+          return (
+            <Button key={index} onClick={() => selectedAnswerIndex == null && setSelectedAnswerIndex(index)}>{answer}</Button>
+          )
+        })}
+      </Box>
+    </Grid>
+  )
 }
 
 const ProgressBar = ({ currentQuestionIndex, totalQuestionsCount }) => {
-	const progressPercentage = (currentQuestionIndex / totalQuestionsCount) * 100
-  
-	return <div className="progressBar">
-    <div className="text">{currentQuestionIndex} answered ({totalQuestionsCount - currentQuestionIndex} remaining)</div>
-    <div className="inner" style={{ width: `${progressPercentage}%` }} />
-	</div>
+  const progressPercentage = (currentQuestionIndex / totalQuestionsCount) * 100
+
+  return <div>
+    <div >{currentQuestionIndex} answered ({totalQuestionsCount - currentQuestionIndex} remaining)</div>
+    <div style={{ width: `${progressPercentage}%` }} />
+  </div>
 }
 
-function Quiz({ questions })  {
-	const [questionIndex, setQuestionIndex] = useState(null)
+function Quiz({ questions }) {
+  const [questionIndex, setQuestionIndex] = useState(null)
   const [answerStatus, setAnswerStatus] = useState(null)
   const [correctAnswerCount, setCorrectAnswerCount] = useState(0)
   const [quizComplete, setQuizComplete] = useState(false)
-  
+
   useEffect(() => {
-  	setAnswerStatus(null)
+    setAnswerStatus(null)
   }, [questionIndex])
-  
+
   useEffect(() => {
-  	if (answerStatus) {
-			setCorrectAnswerCount(count => count + 1)
-		}
+    if (answerStatus) {
+      setCorrectAnswerCount(count => count + 1)
+    }
   }, [answerStatus])
 
   const onNextClick = () => {
-  	if (questionIndex === questions.length - 1) {
-    	setQuizComplete(true)
+    if (questionIndex === questions.length - 1) {
+      setQuizComplete(true)
     } else {
-    	setQuestionIndex(questionIndex == null ? 0 : questionIndex + 1)
-		}
+      setQuestionIndex(questionIndex == null ? 0 : questionIndex + 1)
+    }
   }
-  
+
   const onRestartClick = () => {
-  	setQuizComplete(false)
+    setQuizComplete(false)
     setQuestionIndex(null)
     setCorrectAnswerCount(0)
   }
-  
+
   if (questionIndex == null) {
     return (
-      <div className="quiz">
-        <h1>Start Quiz</h1>
-        <p>This is a simple React quiz.</p><p>Check out the accompanying article over at <a href="#">justacodingblog</a> for a detailed breakdown of how the quiz works!</p>
-        <button className="start" onClick={onNextClick}>Start</button>
-      </div>
+      <Grid contaier>
+        <Typography>Start Quiz</Typography>
+        <Typography>This is a simple React quiz.</Typography>
+        <Button variant="outlined" onClick={onNextClick}>Start</Button>
+      </Grid>
     )
   }
-	
-	return (
-    <div className="quiz">
+
+  return (
+    <Grid container justifyContent='center'>
       {quizComplete ? (
-      	<Fragment>
-      	  <h1>Quiz complete!</h1>
-          <p>You answered {correctAnswerCount} questions correctly (out of a total {questions.length} questions)</p>
-        </Fragment>
+        <Grid >
+          <Typography>Quiz complete!</Typography>
+          <Typography>You answered {correctAnswerCount} questions correctly (out of a total {questions.length} questions)</Typography>
+        </Grid>
       ) : (
-       <Fragment>
-        <ProgressBar currentQuestionIndex={questionIndex} totalQuestionsCount={questions.length} />
-        <Question 
-          question={questions[questionIndex]} 
-          setAnswerStatus={setAnswerStatus}
-        />
-        {answerStatus != null && (
-          <div>
-            <div className="answerStatus">{!!answerStatus ? "Correct! :)" : "Your answer was incorrect :("}</div>
-            <button className="next" onClick={onNextClick}>
-            {questionIndex === questions.length - 1 ? "See results of this quiz" : "Next Question ->"}
-            </button>
-          </div>
-        )}
-      </Fragment>
+        <Grid item sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
+          <ProgressBar currentQuestionIndex={questionIndex} totalQuestionsCount={questions.length} />
+          <Question
+            question={questions[questionIndex]}
+            setAnswerStatus={setAnswerStatus}
+          />
+          {answerStatus != null && (
+            <Grid item>
+              <Box className="answerStatus">{!!answerStatus ? "Correct! :)" : "Your answer was incorrect :("}</Box>
+              <Button variant="outlined" onClick={onNextClick}>
+                {questionIndex === questions.length - 1 ? "See results of this quiz" : "Next Question ->"}
+              </Button>
+            </Grid>
+          )}
+        </Grid>
       )}
-      
-      {questionIndex != null && <button className="restart" onClick={onRestartClick}>Restart quiz</button>}
-    </div>
+      <Grid>
+        {questionIndex != null && <Button variant="outlined" onClick={onRestartClick}>Restart quiz</Button>}
+      </Grid>
+    </Grid>
   )
 }
 

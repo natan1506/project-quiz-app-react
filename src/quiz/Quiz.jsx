@@ -1,10 +1,15 @@
-import { Box, Button, Container, Grid, Typography } from '@material-ui/core';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
+import Button from '@mui/material/Button';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
 import './quiz.css'
 
-const Question = ({ question, setAnswerStatus }) => {
-  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
-
+function Question({ question, setAnswerStatus }) {
+	const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
+	
   useEffect(() => {
     if (selectedAnswerIndex != null) {
       setAnswerStatus(selectedAnswerIndex === question.correctAnswerIndex)
@@ -32,28 +37,33 @@ const Question = ({ question, setAnswerStatus }) => {
 
     return classes.join(" ")
   }
-
-  return (
-    <Grid>
-      <Box>{question.question}</Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+  
+	return (
+  	<Box sx={{m: 2}}>
+      <Typography variant="h6" component="div">
+        {question.question}
+      </Typography>
+      <Box sx={{mt: 2}}>
         {question.answers.map((answer, index) => {
-          return (
-            <Button key={index} onClick={() => selectedAnswerIndex == null && setSelectedAnswerIndex(index)}>{answer}</Button>
-          )
-        })}
+        	return <div key={index} className={`answer ${getClasses(index)}`} onClick={() => selectedAnswerIndex == null && setSelectedAnswerIndex(index)}>{answer}</div>
+      	})}
       </Box>
-    </Grid>
-  )
+    </Box>
+ )
 }
 
-const ProgressBar = ({ currentQuestionIndex, totalQuestionsCount }) => {
-  const progressPercentage = (currentQuestionIndex / totalQuestionsCount) * 100
-
-  return <div>
-    <div >{currentQuestionIndex} answered ({totalQuestionsCount - currentQuestionIndex} remaining)</div>
-    <div style={{ width: `${progressPercentage}%` }} />
-  </div>
+function ProgressBar({ currentQuestionIndex, totalQuestionsCount }) {
+	const progressPercentage = (currentQuestionIndex / totalQuestionsCount) * 100
+  
+	return (
+    <Box sx={{ width: '100%' }}>
+      <LinearProgress variant="determinate" value={progressPercentage} />
+    </Box>
+    // <div className="progressBar">
+    //   <div className="text">{currentQuestionIndex} answered ({totalQuestionsCount - currentQuestionIndex} remaining)</div>
+    //   <div className="inner" style={{ width: `${progressPercentage}%` }} />
+    // </div>
+  )
 }
 
 function Quiz({ questions }) {
@@ -88,42 +98,51 @@ function Quiz({ questions }) {
 
   if (questionIndex == null) {
     return (
-      <Grid contaier>
-        <Typography>Start Quiz</Typography>
-        <Typography>This is a simple React quiz.</Typography>
-        <Button variant="outlined" onClick={onNextClick}>Start</Button>
-      </Grid>
+      <Card sx={{ minWidth: 345, maxWidth: 400}}>
+        <CardContent>
+          <Typography variant="h3" component="div">
+            Questionario
+          </Typography>
+          <p>This is a simple React quiz.</p><p>Check out the accompanying article over at <a href="#">justacodingblog</a> for a detailed breakdown of how the quiz works!</p>
+          <Button variant="outlined" size="small" onClick={onNextClick}>Começar</Button>
+        </CardContent>
+      </Card>
     )
   }
-
-  return (
-    <Grid container justifyContent='center'>
-      {quizComplete ? (
-        <Grid >
-          <Typography>Quiz complete!</Typography>
-          <Typography>You answered {correctAnswerCount} questions correctly (out of a total {questions.length} questions)</Typography>
-        </Grid>
-      ) : (
-        <Grid item sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
+	
+	return (
+    <Card sx={{ minWidth: 345, maxWidth: 400}}>
+      <CardContent>
+        {quizComplete ? (
+          <Fragment>
+            <Typography variant="h3" component="div">
+              Questionario completo
+            </Typography>
+            <p>You answered {correctAnswerCount} questions correctly (out of a total {questions.length} questions)</p>
+          </Fragment>
+        ) : (
+        <Fragment>
           <ProgressBar currentQuestionIndex={questionIndex} totalQuestionsCount={questions.length} />
-          <Question
-            question={questions[questionIndex]}
+          <Question 
+            question={questions[questionIndex]} 
             setAnswerStatus={setAnswerStatus}
           />
           {answerStatus != null && (
-            <Grid item>
-              <Box className="answerStatus">{!!answerStatus ? "Correct! :)" : "Your answer was incorrect :("}</Box>
-              <Button variant="outlined" onClick={onNextClick}>
-                {questionIndex === questions.length - 1 ? "See results of this quiz" : "Next Question ->"}
+            <div>
+              <div className="answerStatus">{!!answerStatus ? "Correto" : "Resposta errada"}</div>
+              <Button variant="outlined" size="small" onClick={onNextClick}>
+                {questionIndex === questions.length - 1 ? "Ver resultado" : "Próxima"}
               </Button>
-            </Grid>
+            </div>
           )}
-        </Grid>
-      )}
-      <Grid>
-        {questionIndex != null && <Button variant="outlined" onClick={onRestartClick}>Restart quiz</Button>}
-      </Grid>
-    </Grid>
+        </Fragment>
+        )}
+        
+        {questionIndex != null && <Button variant="outlined" size="small" onClick={onRestartClick}>
+          recomeçar</Button>}
+      
+      </CardContent>
+    </Card>
   )
 }
 

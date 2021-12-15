@@ -5,6 +5,13 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+
+import { red, green } from '@mui/material/colors';
 import './quiz.css'
 
 function Question({ question, setAnswerStatus }) {
@@ -44,9 +51,19 @@ function Question({ question, setAnswerStatus }) {
         {question.question}
       </Typography>
       <Box sx={{mt: 2}}>
-        {question.answers.map((answer, index) => {
+        <RadioGroup
+          name="radio-buttons-group"
+        >
+          {question.answers.map((answer, index) => (
+            <FormControlLabel key={index} value={answer} control={<Radio />} label={answer}
+              className={`answer ${getClasses(index)}`}
+              onClick={() => selectedAnswerIndex == null && setSelectedAnswerIndex(index)}
+            />
+          ))}
+        </RadioGroup>
+        {/* {question.answers.map((answer, index) => {
         	return <div key={index} className={`answer ${getClasses(index)}`} onClick={() => selectedAnswerIndex == null && setSelectedAnswerIndex(index)}>{answer}</div>
-      	})}
+      	})} */}
       </Box>
     </Box>
  )
@@ -103,9 +120,11 @@ function Quiz({ questions })  {
           <Typography variant="h3" component="div">
             Questionario
           </Typography>
-          <p>This is a simple React quiz.</p><p>Check out the accompanying article over at <a href="#">justacodingblog</a> for a detailed breakdown of how the quiz works!</p>
-          <Button variant="outlined" size="small" onClick={onNextClick}>Começar</Button>
+          <p>This is a simple React quiz.</p><p>Check out the accompanying article over at for a detailed breakdown of how the quiz works!</p>
         </CardContent>
+        <CardActions>
+          <Button variant="outlined" size="small" onClick={onNextClick}>Começar</Button>
+        </CardActions>
       </Card>
     )
   }
@@ -115,10 +134,10 @@ function Quiz({ questions })  {
       <CardContent>
         {quizComplete ? (
           <Fragment>
-            <Typography variant="h3" component="div">
+            <Typography sx={{mb: 2}} variant="h4" component="div">
               Questionario completo
             </Typography>
-            <p>You answered {correctAnswerCount} questions correctly (out of a total {questions.length} questions)</p>
+            <Typography variant="p" component="div">Você acertou {correctAnswerCount} questões de um total de {questions.length}</Typography>
           </Fragment>
         ) : (
         <Fragment>
@@ -127,21 +146,23 @@ function Quiz({ questions })  {
             question={questions[questionIndex]} 
             setAnswerStatus={setAnswerStatus}
           />
-          {answerStatus != null && (
-            <div>
-              <div className="answerStatus">{!!answerStatus ? "Correto" : "Resposta errada"}</div>
-              <Button variant="outlined" size="small" onClick={onNextClick}>
-                {questionIndex === questions.length - 1 ? "Ver resultado" : "Próxima"}
-              </Button>
-            </div>
-          )}
+          
         </Fragment>
         )}
         
-        {questionIndex != null && <Button variant="outlined" size="small" onClick={onRestartClick}>
-          recomeçar</Button>}
-      
       </CardContent>
+      <CardActions sx={{justifyContent: 'space-between'}}>
+        {questionIndex != null && <Button variant="outlined" size="small" onClick={onRestartClick}>recomeçar</Button>}
+
+        {answerStatus != null && (
+          // <div>
+          //   <div className="answerStatus">{!!answerStatus ? "Correto" : "Resposta errada"}</div>
+            <Button variant="outlined" size="small" onClick={onNextClick}>
+              {questionIndex === questions.length - 1 ? "Ver resultado" : "Próxima"}
+            </Button>
+          // </div>
+        )}
+      </CardActions>
     </Card>
   )
 }

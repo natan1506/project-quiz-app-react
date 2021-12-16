@@ -10,6 +10,8 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+import './quiz.css';
+
 const primary = '#565AE6';
 const secondary = '#FFD964';
 const subtitle = '#777';
@@ -127,11 +129,11 @@ function Quiz({ questions }) {
           <Typography variant="h3" component="div" sx={{ mb: 5 }}>
             Questionário
           </Typography>
-          <Typography sx={{ font}}>
+          <Typography>
             <p>This is a simple React quiz.</p><p>Check out the accompanying article over at for a detailed breakdown of how the quiz works!</p>
           </Typography>
         </CardContent>
-        <CardActions sx={{ display: 'flex', justifyContent: 'center', pt: 7 }}>
+        <CardActions sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
           <Button variant="outlined" size="large" onClick={onNextClick} sx={{
             height: '50px', bgcolor: '#fff', color: primary, fontWeight: 'bold',
             ':hover': { bgcolor: primary, color: '#fff', border: '2px solid #fff' }
@@ -144,15 +146,12 @@ function Quiz({ questions }) {
   }
 
   return (
-    <Card sx={{ width: { xs: '300px', md: '450px', lg: '1200px' }, borderRadius: '4px', border: '1px solid #565AE6' }}>
-      <CardContent>
+    <Card sx={{ width: '100%', borderRadius: '4px', border: '1px solid #565AE6' }}>
+      <CardContent sx={{ p: 0 }}>
         {quizComplete ? (
           <Box sx={{
-            bgcolor: '#fff',
             height: '270px',
             color: '#fff',
-            // display: 'flex',
-            // justifyContent: 'center',
             textAlign: 'center',
             display: 'flex',
             justifyContent: 'center',
@@ -166,8 +165,10 @@ function Quiz({ questions }) {
             <Typography variant="p" component="div">Você acertou {correctAnswerCount} questões de um total de {questions.length}</Typography>
           </Box>
         ) : (
-          <Box sx={{}}>
-            <ProgressBar currentQuestionIndex={questionIndex} totalQuestionsCount={questions.length} />
+          <Box sx={{ position: 'relative' }}>
+            <Box>
+              <ProgressBar currentQuestionIndex={questionIndex} totalQuestionsCount={questions.length} />
+            </Box>
             <Question
               question={questions[questionIndex]}
               setAnswerStatus={setAnswerStatus}

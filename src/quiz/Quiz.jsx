@@ -127,7 +127,7 @@ function Quiz({ questions }) {
           <Typography variant="h3" component="div" sx={{ mb: 5 }}>
             Questionário
           </Typography>
-          <Typography>
+          <Typography sx={{ font}}>
             <p>This is a simple React quiz.</p><p>Check out the accompanying article over at for a detailed breakdown of how the quiz works!</p>
           </Typography>
         </CardContent>

@@ -9,14 +9,14 @@ import CardActions from '@mui/material/CardActions';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
 
-import { red, green } from '@mui/material/colors';
-import './quiz.css'
+const primary = '#565AE6';
+const secondary = '#FFD964';
+const subtitle = '#777';
 
 function Question({ question, setAnswerStatus }) {
-	const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
-	
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
+
   useEffect(() => {
     if (selectedAnswerIndex != null) {
       setAnswerStatus(selectedAnswerIndex === question.correctAnswerIndex)
@@ -44,13 +44,13 @@ function Question({ question, setAnswerStatus }) {
 
     return classes.join(" ")
   }
-  
-	return (
-  	<Box sx={{m: 2}}>
-      <Typography variant="h6" component="div">
+
+  return (
+    <Box sx={{ height: '300px', p: 5, display: 'flex', justifyContent: 'space-around', flexDirection: 'column' }}>
+      <Typography variant="h6" component="div" sx={{ pb: 3 }}>
         {question.question}
       </Typography>
-      <Box sx={{mt: 2}}>
+      <Box>
         <RadioGroup
           name="radio-buttons-group"
         >
@@ -66,15 +66,15 @@ function Question({ question, setAnswerStatus }) {
       	})} */}
       </Box>
     </Box>
- )
+  )
 }
 
 function ProgressBar({ currentQuestionIndex, totalQuestionsCount }) {
-	const progressPercentage = (currentQuestionIndex / totalQuestionsCount) * 100
-  
-	return (
+  const progressPercentage = (currentQuestionIndex / totalQuestionsCount) * 100
+
+  return (
     <Box sx={{ width: '100%' }}>
-      <LinearProgress variant="determinate" value={progressPercentage} />
+      <LinearProgress variant="determinate" color='secondary' value={progressPercentage} sx={{ height: 10, bgcolor: secondary }} />
     </Box>
     // <div className="progressBar">
     //   <div className="text">{currentQuestionIndex} answered ({totalQuestionsCount - currentQuestionIndex} remaining)</div>
@@ -115,51 +115,108 @@ function Quiz({ questions }) {
 
   if (questionIndex == null) {
     return (
-      <Card sx={{ minWidth: 345, maxWidth: 400}}>
+      <Card sx={{
+        width: { xs: '300px', md: '450px', lg: '750px' },
+        p: { xs: 1, lg: 10 },
+        bgcolor: primary,
+        color: '#fff',
+        borderRadius: '4px',
+        textAlign: 'center'
+      }}>
         <CardContent>
-          <Typography variant="h3" component="div">
-            Questionario
+          <Typography variant="h3" component="div" sx={{ mb: 5 }}>
+            Questionário
           </Typography>
-          <p>This is a simple React quiz.</p><p>Check out the accompanying article over at for a detailed breakdown of how the quiz works!</p>
+          <Typography>
+            <p>This is a simple React quiz.</p><p>Check out the accompanying article over at for a detailed breakdown of how the quiz works!</p>
+          </Typography>
         </CardContent>
-        <CardActions>
-          <Button variant="outlined" size="small" onClick={onNextClick}>Começar</Button>
+        <CardActions sx={{ display: 'flex', justifyContent: 'center', pt: 7 }}>
+          <Button variant="outlined" size="large" onClick={onNextClick} sx={{
+            height: '50px', bgcolor: '#fff', color: primary, fontWeight: 'bold',
+            ':hover': { bgcolor: primary, color: '#fff', border: '2px solid #fff' }
+          }}>
+            Começar
+          </Button>
         </CardActions>
       </Card>
     )
   }
-	
-	return (
-    <Card sx={{ minWidth: 345, maxWidth: 400}}>
+
+  return (
+    <Card sx={{ width: { xs: '300px', md: '450px', lg: '1200px' }, borderRadius: '4px', border: '1px solid #565AE6' }}>
       <CardContent>
         {quizComplete ? (
-          <Fragment>
-            <Typography sx={{mb: 2}} variant="h4" component="div">
+          <Box sx={{
+            bgcolor: '#fff',
+            height: '270px',
+            color: '#fff',
+            // display: 'flex',
+            // justifyContent: 'center',
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            bgcolor: primary,
+            p: 5,
+          }}>
+            <Typography sx={{ mb: 2 }} variant="h4" component="div">
               Questionario completo
             </Typography>
             <Typography variant="p" component="div">Você acertou {correctAnswerCount} questões de um total de {questions.length}</Typography>
-          </Fragment>
+          </Box>
         ) : (
-        <Fragment>
-          <ProgressBar currentQuestionIndex={questionIndex} totalQuestionsCount={questions.length} />
-          <Question 
-            question={questions[questionIndex]} 
-            setAnswerStatus={setAnswerStatus}
-          />
-          
-        </Fragment>
+          <Box sx={{}}>
+            <ProgressBar currentQuestionIndex={questionIndex} totalQuestionsCount={questions.length} />
+            <Question
+              question={questions[questionIndex]}
+              setAnswerStatus={setAnswerStatus}
+            />
+
+          </Box>
         )}
-        
+
       </CardContent>
-      <CardActions sx={{justifyContent: 'space-between'}}>
-        {questionIndex != null && <Button variant="outlined" size="small" onClick={onRestartClick}>recomeçar</Button>}
+      <CardActions sx={{ display: 'flex', justifyContent: 'space-between', px: 5, py: 3 }}>
+        {questionIndex != null &&
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={onRestartClick}
+            sx={{
+              width: '140px',
+              height: '50px',
+              bgcolor: '#fff',
+              color: primary,
+              fontSize: 15,
+              border: '1px solid #565AE6',
+              fontWeight: 'bold',
+              ':hover': { bgcolor: secondary, color: primary, border: '2px solid #565AE6' }
+            }}
+          >
+            Recomeçar
+          </Button>}
 
         {answerStatus != null && (
           // <div>
           //   <div className="answerStatus">{!!answerStatus ? "Correto" : "Resposta errada"}</div>
-            <Button variant="outlined" size="small" onClick={onNextClick}>
-              {questionIndex === questions.length - 1 ? "Ver resultado" : "Próxima"}
-            </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={onNextClick}
+            sx={{
+              width: '210px',
+              height: '50px',
+              bgcolor: '#fff',
+              border: '1px solid #565AE6',
+              color: primary,
+              fontSize: 15,
+              fontWeight: 'bold',
+              ':hover': { bgcolor: primary, color: '#fff', border: '2px solid #565AE6' }
+
+            }}>
+            {questionIndex === questions.length - 1 ? "Ver resultado" : "Próxima"}
+          </Button>
           // </div>
         )}
       </CardActions>

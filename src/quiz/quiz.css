@@ -1,0 +1,15 @@
+  
+  .answer.selected {
+    background: gainsboro;
+  }
+  
+  .answer.correct {
+    background: #6ad85c;
+    font-weight: bold;
+  }
+  
+  .answer.incorrect {
+    background: #df3636;
+    font-weight: bold;
+  }
+  
